@@ -1,7 +1,9 @@
 import 'package:dream_tickets/features/presentation/pages/AuthentifierPage.dart';
+import 'package:dream_tickets/features/presentation/pages/Paiement.dart';
 import 'package:dream_tickets/features/presentation/pages/connexionPage.dart';
 import 'package:dream_tickets/features/presentation/pages/profile.dart';
 import 'package:dream_tickets/features/presentation/pages/reservation.dart';
+import 'package:dream_tickets/features/presentation/pages/ticket.dart';
 import 'package:flutter/material.dart';
 
 void main() async {
@@ -13,10 +15,12 @@ void main() async {
     MaterialApp(
       title: 'dream_tickets',
       routes: <String, WidgetBuilder>{
-        '/': (BuildContext context) => ConnexionPage(),
+        //'/': (BuildContext context) => ConnexionPage(),
         // '/': (BuildContext context) => Authentifierpage(),
         // '/': (BuildContext context) => ReservationPage(),
         // '/': (BuildContext context) => ProfilePage(),
+        '/': (BuildContext context) => PaiemenPage(),
+        '/ticket': (BuildContext context) => TicketPage(),
       },
     ),
   );
