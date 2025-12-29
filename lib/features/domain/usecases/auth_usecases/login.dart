@@ -1,0 +1,16 @@
+import 'package:dartz/dartz.dart';
+import 'package:dream_tickets/core/error/failures.dart';
+import 'package:dream_tickets/features/domain/entities/users.dart';
+import 'package:dream_tickets/features/domain/repositories/auth_repository.dart';
+
+class LoginUseCase {
+  final AuthRepository repository;
+
+  LoginUseCase(this.repository);
+  Future<Either<Failure, UserEntity>> cal({
+    required String email,
+    required String password,
+  }) async {
+    return await repository.login(email: email, password: password);
+  }
+}
