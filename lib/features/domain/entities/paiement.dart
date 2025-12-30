@@ -1,5 +1,5 @@
 class PaiementEntity {
-  final String id;
+  final int id;
   final String ticketID;
   final double amount;
   final DateTime datePaiement;
@@ -10,4 +10,6 @@ class PaiementEntity {
     required this.amount,
     required this.datePaiement,
   });
+  @override
+  List<Object?> get props => [id, ticketID, amount, datePaiement];
 }

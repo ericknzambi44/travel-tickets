@@ -12,4 +12,6 @@ class TrajetEntity {
     required this.prix,
     required this.heureDepart,
   });
+  @override
+  List<Object?> get props => [id, depart, arriver, prix, heureDepart];
 }
