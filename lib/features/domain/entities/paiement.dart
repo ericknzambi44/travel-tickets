@@ -1,6 +1,6 @@
 class PaiementEntity {
   final int id;
-  final String ticketID;
+  final int ticketID;
   final double amount;
   final DateTime datePaiement;
 

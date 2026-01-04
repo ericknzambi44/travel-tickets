@@ -7,7 +7,7 @@ class LoginUseCase {
   final AuthRepository repository;
 
   LoginUseCase(this.repository);
-  Future<Either<Failure, UserEntity>> cal({
+  Future<Either<Failure, UserEntity>> call({
     required String email,
     required String password,
   }) async {

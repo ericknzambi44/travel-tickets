@@ -11,7 +11,7 @@ class PaiementModel extends PaiementEntity {
   factory PaiementModel.fromJson(Map<String, dynamic> json) {
     return PaiementModel(
       id: json['id'] as int,
-      ticketID: json['ticketID'] as String,
+      ticketID: json['ticketID'] as int,
       amount: (json['amount'] as num).toDouble(),
       datePaiement: DateTime.parse(json['datePaiement'] as String),
     );

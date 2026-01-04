@@ -10,11 +10,13 @@ class EffectuerPaiement {
   EffectuerPaiement(this.repository);
 
   Future<Either<Failure, PaiementEntity>> call({
+    required int ticketId,
     required double montant,
     required String numeroTelephone,
     required String operateur,
   }) {
     return repository.effectuerPaiement(
+      ticketId: ticketId,
       montant: montant,
       numeroTelephone: numeroTelephone,
       operateur: operateur,

@@ -4,14 +4,15 @@ import 'package:dream_tickets/features/domain/entities/paiement.dart';
 
 abstract class PaiementRepository {
   Future<Either<Failure, PaiementEntity>> effectuerPaiement({
+    required int ticketId,
     required double montant,
     required String numeroTelephone,
-    required String operateur, // 'orange', 'mtn', 'moov', e
+    required String operateur,
   });
 
   Future<Either<Failure, PaiementEntity>> verifierStatutPaiement(
-    String paiementId,
+    int paiementId,
   );
 
-  Future<Either<Failure, bool>> annulerPaiement(String paiementId);
+  Future<Either<Failure, bool>> annulerPaiement(int paiementId);
 }

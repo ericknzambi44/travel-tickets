@@ -6,13 +6,18 @@ import 'package:dream_tickets/features/domain/entities/trajet.dart';
 abstract class BilletRepository {
   Future<Either<Failure, List<TrajetEntity>>> getTrajets();
 
-  Future<Either<Failure, TrajetEntity>> getTarifTrajet(String trajetId);
+  Future<Either<Failure, double>> getTarifTrajet(int trajetId);
 
-  Future<Either<Failure, TicketEntity>> acheterTicket({
-    required String trajetId,
+  Future<Either<Failure, TicketEntity>> reserver({
+    required int trajetId,
     required String nomVoyageur,
-    required double montant,
+    required DateTime date,
   });
 
-  Future<Either<Failure, TicketEntity>> getTicket(String ticketId);
+  Future<Either<Failure, TicketEntity>> getTicket(int ticketId);
+
+  Future<Either<Failure, TrajetEntity>> getTrajetdetail({
+    required String depart,
+    required String arriver,
+  });
 }

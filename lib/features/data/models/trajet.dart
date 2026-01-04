@@ -20,7 +20,7 @@ class TrajetModel extends TrajetEntity {
   }
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
+      // 'id': id,
       'depart': depart,
       'arrivee': arriver,
       'prix': prix,

@@ -1,21 +1,5 @@
-import 'package:dream_tickets/features/presentation/widgets/boutton.dart';
-import 'package:dream_tickets/features/presentation/widgets/text_field.dart';
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-
-class Authentifierpage extends StatefulWidget {
-  const Authentifierpage({super.key});
-
-  @override
-  State<Authentifierpage> createState() => _EnregistrerState();
-}
-
-class _EnregistrerState extends State<Authentifierpage> {
-  void Function()? get onPressed => null;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+//register  
+ return Scaffold(
       body: Container(
         child: Container(
           constraints: BoxConstraints.expand(),
@@ -74,5 +58,3 @@ class _EnregistrerState extends State<Authentifierpage> {
         ),
       ),
     );
-  }
-}

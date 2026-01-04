@@ -8,7 +8,7 @@ class GetTickets {
 
   GetTickets(this.repository);
 
-  Future<Either<Failure, TicketEntity>> call({required String ticketId}) async {
+  Future<Either<Failure, TicketEntity>> call({required int ticketId}) async {
     return await repository.getTicket(ticketId);
   }
 }

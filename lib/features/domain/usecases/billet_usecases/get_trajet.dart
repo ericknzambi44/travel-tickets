@@ -8,7 +8,10 @@ class GetTrajets {
 
   GetTrajets(this.repository);
 
-  Future<Either<Failure, List<TrajetEntity>>> call() async {
-    return await repository.getTrajets();
+  Future<Either<Failure, TrajetEntity>> call({
+    required String depart,
+    required String arriver,
+  }) async {
+    return await repository.getTrajetdetail(depart: depart, arriver: arriver);
   }
 }

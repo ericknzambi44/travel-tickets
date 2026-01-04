@@ -8,7 +8,7 @@ class VerifierStatusPaiementUsecase {
 
   VerifierStatusPaiementUsecase(this.repository);
 
-  Future<Either<Failure, PaiementEntity>> call(String paiementId) async {
+  Future<Either<Failure, PaiementEntity>> call(int paiementId) async {
     return await repository.verifierStatutPaiement(paiementId);
   }
 }

@@ -1,8 +1,7 @@
 import 'package:dream_tickets/features/presentation/blocs/Auth/auth_bloc.dart';
 import 'package:dream_tickets/features/presentation/blocs/Auth/auth_event.dart';
 import 'package:dream_tickets/features/presentation/blocs/Auth/auth_state.dart';
-import 'package:dream_tickets/features/presentation/pages/EnregistrerPage.dart';
-import 'package:dream_tickets/features/presentation/pages/reservation.dart';
+import 'package:dream_tickets/features/presentation/pages/connexionPage.dart';
 import 'package:dream_tickets/features/presentation/widgets/boutton.dart';
 import 'package:dream_tickets/features/presentation/widgets/text_field.dart';
 import 'package:dream_tickets/injection_container.dart';
@@ -10,17 +9,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class ConnexionPage extends StatefulWidget {
-  const ConnexionPage({super.key});
+class EnregistrerPage extends StatefulWidget {
+  const EnregistrerPage({super.key});
 
   @override
-  State<ConnexionPage> createState() => _ConnexionState();
+  State<EnregistrerPage> createState() => _EnregistrerState();
 }
 
-class _ConnexionState extends State<ConnexionPage> {
+class _EnregistrerState extends State<EnregistrerPage> {
   void Function()? get onPressed => null;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +40,7 @@ class _ConnexionState extends State<ConnexionPage> {
             if (state is AuthSucces) {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => ReservationPage()),
+                MaterialPageRoute(builder: (context) => ConnexionPage()),
               );
             } else if (state is AuthFailure) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -87,45 +95,65 @@ class _ConnexionState extends State<ConnexionPage> {
                           controller: _passwordController,
                         ),
                         SizedBox(height: 50),
+                        MyTextField(
+                          hintText: 'Confirmez mot de passe',
+                          icon: Icons.password_rounded,
+                          isPassword: true,
+                          controller: _confirmPasswordController,
+                        ),
+                        SizedBox(height: 50),
                         PrimaryButton(
-                          text: 'CONNECTEZ-VOUS',
+                          text: 'CREEZ-COMPTE',
                           onPressed: () {
                             final email = _emailController.text.trim();
                             final password = _passwordController.text.trim();
-
+                            final confirmpassw = _confirmPasswordController.text
+                                .trim();
                             if (email.isEmpty || password.isEmpty) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
-                                    "Veuillez entrez les informations",
+                                    "Veuillez remplir tous le champs",
                                   ),
                                 ),
                               );
                               return;
                             }
-
+                            if (password != confirmpassw) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    "Les mots de passe ne correspondent pas",
+                                  ),
+                                ),
+                              );
+                              return;
+                            }
                             context.read<AuthBloc>().add(
-                              LoginSubmitted(email: email, password: password),
+                              RegisterSubmitted(
+                                email: email,
+                                password: password,
+                              ),
                             );
                           },
                         ),
                         SizedBox(height: 50),
                         Text(
-                          "Vous n'avez pas encore de compte?",
+                          "Deja inscrit?",
                           // style: TextStyle(color: Colors.white),
                           style: GoogleFonts.inter(
-                            fontSize: 15,
+                            fontSize: 18,
                             color: Colors.white,
                           ),
                         ),
                         SizedBox(height: 30),
                         PrimaryButton(
-                          text: 'INSCRIVEZ-VOUS',
+                          text: 'CONNECTEZ-VOUS',
                           onPressed: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => EnregistrerPage(),
+                                builder: (context) => ConnexionPage(),
                               ),
                             );
                           },
