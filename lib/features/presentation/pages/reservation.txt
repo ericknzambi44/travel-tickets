@@ -1,3 +1,6 @@
+
+import 'dart:ffi';
+
 import 'package:dream_tickets/features/presentation/blocs/billet/billet_bloc.dart';
 import 'package:dream_tickets/features/presentation/blocs/billet/billet_event.dart';
 import 'package:dream_tickets/features/presentation/blocs/billet/billet_state.dart';
@@ -96,7 +99,7 @@ class _ReserverState extends State<ReservationPage> {
     return Scaffold(
       body: Container(
         // create: (context) => sl<TrajetBloc>(),
-        child: BlocConsumer<TrajetBloc, TrajetState>(
+        child: BlocConsumer<TrajetBloc, Trajetstate>(
           listener: (context, state) {
             if (state is BilletLoaded) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -131,10 +134,10 @@ class _ReserverState extends State<ReservationPage> {
           },
           builder: (context, state) {
             DateTime heure = DateTime.now();
-          //  double montant = 0;
+            double montant = 0;
             if (state is TrajetLoaded) {
               heure = state.trajet.heureDepart;
-           //   montant = state.trajet.prix;
+              montant = state.trajet.prix;
             }
             return Container(
               child: Container(
@@ -231,26 +234,24 @@ class _ReserverState extends State<ReservationPage> {
                                       icon: Icons.calendar_view_day_rounded,
                                     ),
                                     SizedBox(height: 20),
-                                    SingleChildScrollView(
-                                      child: Column(
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Text("Heure depart"),
-                                              const SizedBox(width: 32),
-                                              Text(heure.hour.toString()),
-                                            ],
-                                          ),
-                                          const SizedBox(height: 10),
-                                          Row(
-                                            children: [
-                                              Text("Montat a payer"),
-                                              const SizedBox(width: 20),
-                                              //  Expanded(child: Text("0")),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
+                                    Column(
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text("Heure depart"),
+                                            const SizedBox(width: 32),
+                                            Text(heure.hour.toString()),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 10),
+                                        Row(
+                                          children: [
+                                            Text("Montat a payer"),
+                                            const SizedBox(width: 20),
+                                            Text(montant.toDouble.toString()),
+                                          ],
+                                        ),
+                                      ],
                                     ),
                                     const SizedBox(height: 20),
                                     MyTextFieldRectangle(

@@ -10,10 +10,12 @@ import 'package:dream_tickets/features/domain/usecases/auth_usecases/isUserLogge
 import 'package:dream_tickets/features/domain/usecases/auth_usecases/login.dart';
 import 'package:dream_tickets/features/domain/usecases/auth_usecases/logout.dart';
 import 'package:dream_tickets/features/domain/usecases/auth_usecases/register.dart';
+import 'package:dream_tickets/features/domain/usecases/billet_usecases/getTrajet2.dart';
 import 'package:dream_tickets/features/domain/usecases/billet_usecases/get_ticket.dart';
 import 'package:dream_tickets/features/domain/usecases/billet_usecases/get_trajet.dart';
 import 'package:dream_tickets/features/domain/usecases/billet_usecases/reserverTicket.dart';
 import 'package:dream_tickets/features/presentation/blocs/Auth/auth_bloc.dart';
+import 'package:dream_tickets/features/presentation/blocs/billet/trajet_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -34,6 +36,10 @@ Future<void> init() async {
   sl.registerLazySingleton<RegisterUseCase>(
     () => RegisterUseCase(sl<AuthRepository>()),
   );
+  sl.registerLazySingleton<GetTrajetss>(
+    () => GetTrajetss(sl<BilletRepository>()),
+  );
+
   sl.registerLazySingleton<LogoutUseCase>(
     () => LogoutUseCase(sl<AuthRepository>()),
   );
@@ -50,15 +56,15 @@ Future<void> init() async {
       registerUseCase: sl<RegisterUseCase>(),
     ),
   );
-
-  //pour billet et Trajet
+  sl.registerFactory(() => TrajetBloc(getTrajets: sl<GetTrajets>()));
+  //pour billet et Trajetsss
 
   sl.registerLazySingleton<BilletRemoteDataSource>(
     () => BilletRemoteDataSourceImpl(sl()),
   );
-  sl.registerFactory<BilletRemoteDataSource>(
-    () => BilletRemoteDataSourceImpl(sl()),
-  );
+  // sl.registerFactory<BilletRemoteDataSource>(
+  // () => BilletRemoteDataSourceImpl(sl()),
+  //);
 
   sl.registerFactory<BilletRepository>(() => BilletTrajetRepositoryImpl(sl()));
 

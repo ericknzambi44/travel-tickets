@@ -1,3 +1,5 @@
+import 'package:dream_tickets/features/presentation/pages/EnregistrerPage.dart';
+import 'package:dream_tickets/features/presentation/pages/profile.dart';
 import 'package:flutter/material.dart';
 
 void showProfileMenu(BuildContext context) {
@@ -33,7 +35,10 @@ void showProfileMenu(BuildContext context) {
                     borderRadius: BorderRadius.circular(30),
                   ),
                 ),
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfilePage()),
+                ),
                 child: const Text(
                   "PROFIL",
                   style: TextStyle(
@@ -59,7 +64,10 @@ void showProfileMenu(BuildContext context) {
                     borderRadius: BorderRadius.circular(30),
                   ),
                 ),
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => EnregistrerPage()),
+                ),
                 child: const Text(
                   "DECONNEXION",
                   style: TextStyle(

@@ -1,26 +1,36 @@
+// States
 import 'package:dream_tickets/features/domain/entities/trajet.dart';
 import 'package:equatable/equatable.dart';
 
-abstract class Trajetstate extends Equatable {
-  const Trajetstate();
+abstract class TrajetState extends Equatable {
+  const TrajetState();
+
   @override
-  List<Object?> get props => [];
+  List<Object> get props => [];
 }
 
-class TrajeteInitial extends Trajetstate {}
+class TrajetInitial extends TrajetState {
+  const TrajetInitial();
+}
 
-class TrajetLoading extends Trajetstate {}
+class TrajetLoading extends TrajetState {
+  const TrajetLoading();
+}
 
-class TrajetLoaded extends Trajetstate {
+class TrajetLoaded extends TrajetState {
   final TrajetEntity trajet;
-  const TrajetLoaded({required this.trajet});
+
+  const TrajetLoaded(this.trajet);
+
   @override
-  List<Object?> get props => [trajet];
+  List<Object> get props => [trajet];
 }
 
-class TrajeFailure extends Trajetstate {
+class TrajetError extends TrajetState {
   final String message;
-  const TrajeFailure({required this.message});
+
+  const TrajetError(this.message);
+
   @override
-  List<Object?> get props => [message];
+  List<Object> get props => [message];
 }

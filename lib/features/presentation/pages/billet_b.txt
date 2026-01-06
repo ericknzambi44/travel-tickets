@@ -1,0 +1,347 @@
+import 'package:dream_tickets/features/presentation/couleurs/couleurs.dart';
+import 'package:dream_tickets/features/presentation/pages/reservation.dart';
+import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+class TicketPag extends StatefulWidget {
+  const TicketPag({super.key});
+
+  @override
+  State<TicketPag> createState() => _TicketState();
+}
+
+class _TicketState extends State<TicketPag> {
+  final supabase = Supabase.instance.client;
+  List<Map<String, dynamic>> _tickets = []; // Liste des tickets complets
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchTickets();
+  }
+
+  // Fonction pour récupérer la liste des tickets de l'utilisateur
+  Future<void> _fetchTickets() async {
+    final User? user = supabase.auth.currentUser;
+    if (user == null) return;
+
+    setState(() => _isLoading = true);
+
+    try {
+      final data = await supabase
+          .from('tickets')
+          // Jointure des tables pour obtenir toutes les informations
+          .select(
+            'id, nom, date_achat, trajets(depart, arrivee, heure_depart), paiements(montant)',
+          )
+          .eq('profil_id', user.id)
+          .order('date_achat', ascending: false);
+
+      if (mounted) {
+        setState(() {
+          _tickets = List<Map<String, dynamic>>.from(data);
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Erreur: Impossible de charger les tickets.'),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
+  // Détermine l'état du ticket
+  String _getTicketStatus(DateTime purchaseDate, String departureTime) {
+    try {
+      final now = DateTime.now();
+      // Simuler la date/heure de départ
+      final date = purchaseDate.toLocal().copyWith(
+        hour: int.parse(departureTime.split(':')[0]),
+        minute: int.parse(departureTime.split(':')[1].split(' ')[0]),
+        second: 0,
+        millisecond: 0,
+      );
+      return date.isAfter(now) ? 'EN COURS' : 'EXPIRÉ';
+    } catch (e) {
+      return 'INCONNU';
+    }
+  }
+
+  // Widget pour un seul ticket (Carte à swiper)
+  Widget _buildSingleTicketCard(Map<String, dynamic> ticket) {
+    final String ticketNumber = ticket['id'].toString().padLeft(4, '0');
+    final String passengerName = ticket['nom'] ?? 'N/A';
+    final String depart = ticket['trajets']['depart'] ?? 'N/A';
+    final String arrivee = ticket['trajets']['arrivee'] ?? 'N/A';
+    final String heureDepart = ticket['trajets']['heure_depart'] ?? 'N/A';
+    final double montant = (ticket['paiements'] as List).isNotEmpty
+        ? (ticket['paiements'][0]['montant'] as num).toDouble()
+        : 0.0;
+    final DateTime dateAchat = DateTime.parse(ticket['date_achat']);
+    final String status = _getTicketStatus(dateAchat, heureDepart);
+
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.9,
+      margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+      padding: const EdgeInsets.all(25.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10)],
+      ),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            // Départ et Arrivée
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      depart,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: kPrimaryColor,
+                      ),
+                    ),
+                    const Text('Depart', style: TextStyle(color: Colors.grey)),
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      arrivee,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: kPrimaryColor,
+                      ),
+                    ),
+                    const Text('Arrivée', style: TextStyle(color: Colors.grey)),
+                  ],
+                ),
+              ],
+            ),
+
+            const Divider(height: 30, color: Colors.grey),
+
+            // Détails du Ticket
+            _buildTicketDetail('Ticket N°', ticketNumber),
+            const SizedBox(height: 10),
+            _buildTicketDetail('Passager', passengerName),
+            const SizedBox(height: 10),
+            _buildTicketDetail('Heure de départ', heureDepart),
+            const SizedBox(height: 10),
+            _buildTicketDetail(
+              'Total payé',
+              '${montant.toStringAsFixed(0)} \$',
+              valueColor: kGradientStart,
+            ),
+
+            const SizedBox(height: 15),
+
+            // Statut
+            Center(
+              child: Text(
+                status,
+                style: TextStyle(
+                  color: status == 'EXPIRÉ' ? Colors.red : kPrimaryColor,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.5,
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+            const Divider(
+              color: Colors.grey,
+              height: 10,
+              thickness: 1,
+              indent: 20,
+              endIndent: 20,
+            ),
+            const SizedBox(height: 20),
+
+            // QR Code (Placeholder)
+            const Center(
+              child: Icon(Icons.qr_code_2, size: 120, color: kPrimaryColor),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTicketDetail(
+    String label,
+    String value, {
+    Color valueColor = Colors.black,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(fontSize: 14, color: Colors.black54),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: valueColor,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Widget de barre de navigation personnalisée
+  Widget _buildBottomNavBar(BuildContext context) {
+    return Container(
+      height: 70,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            spreadRadius: 1,
+            blurRadius: 5,
+            offset: const Offset(0, -3),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _navBarItem(context, Icons.home, 'Accueil', false),
+          _navBarItem(context, Icons.list_alt, 'Billets', true),
+        ],
+      ),
+    );
+  }
+
+  Widget _navBarItem(
+    BuildContext context,
+    IconData icon,
+    String label,
+    bool isActive,
+  ) {
+    return InkWell(
+      onTap: () {
+        if (!isActive) {
+          if (label == 'Accueil') {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const ReservationPage2()),
+              (route) => false,
+            );
+          }
+        }
+      },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, color: isActive ? kPrimaryColor : Colors.grey, size: 24),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              color: isActive ? kPrimaryColor : Colors.grey,
+              fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      body: Stack(
+        children: [
+          Container(
+            height: double.infinity,
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [kGradientStart, kGradientEnd],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+          ),
+
+          SafeArea(
+            child: Column(
+              children: [
+                // TITRE SAFARI SANS SHADERMASK
+                const Padding(
+                  padding: EdgeInsets.only(top: 10.0, bottom: 20.0),
+                  child: Text(
+                    'SAFARI',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 4.0,
+                    ),
+                  ),
+                ),
+
+                Expanded(
+                  // Vue des tickets (Page View pour le "swipe" horizontal)
+                  child: _isLoading
+                      ? const Center(
+                          child: CircularProgressIndicator(color: Colors.white),
+                        )
+                      : _tickets.isEmpty
+                      ? const Center(
+                          child: Text(
+                            'Aucun ticket acheté.',
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          ),
+                        )
+                      : PageView.builder(
+                          controller: PageController(
+                            viewportFraction: 0.9,
+                          ), // Montre une partie du ticket suivant/précédent
+                          itemCount: _tickets.length,
+                          itemBuilder: (context, index) {
+                            return _buildSingleTicketCard(_tickets[index]);
+                          },
+                        ),
+                ),
+                const SizedBox(height: 80),
+              ],
+            ),
+          ),
+
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: _buildBottomNavBar(context),
+          ),
+        ],
+      ),
+    );
+  }
+}

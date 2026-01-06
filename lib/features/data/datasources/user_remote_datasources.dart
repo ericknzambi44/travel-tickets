@@ -21,9 +21,16 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
         email: email,
         password: password,
       );
-      if (response.user == null) throw Exception("Utilisateur non trouvé");
+      if (response.user != null) {
+        return UserModel(
+          id: response.user!.id,
+          email: response.user!.email ?? '',
+        );
+      } else {
+        throw Exception("utilisateur no trouve");
+      }
 
-      return UserModel.fromJSON(response.user!.toJson());
+      //  return UserModel.fromJSON(response.user!.toJson());
     } catch (e) {
       throw Exception("Erreur de connexion: $e");
     }

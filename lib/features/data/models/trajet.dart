@@ -15,12 +15,12 @@ class TrajetModel extends TrajetEntity {
       depart: json['depart'] as String,
       arriver: json['arrivee'] as String,
       prix: (json['prix'] as num).toDouble(),
-      heureDepart: json['heure_depart'] as DateTime,
+      heureDepart: DateTime.parse(json['heure_depart'] as String),
     );
   }
   Map<String, dynamic> toJson() {
     return {
-      // 'id': id,
+      'id': id,
       'depart': depart,
       'arrivee': arriver,
       'prix': prix,
