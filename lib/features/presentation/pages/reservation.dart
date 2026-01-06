@@ -131,10 +131,10 @@ class _ReserverState extends State<ReservationPage> {
           },
           builder: (context, state) {
             DateTime heure = DateTime.now();
-          //  double montant = 0;
+            //  double montant = 0;
             if (state is TrajetLoaded) {
               heure = state.trajet.heureDepart;
-           //   montant = state.trajet.prix;
+              //   montant = state.trajet.prix;
             }
             return Container(
               child: Container(
@@ -218,7 +218,7 @@ class _ReserverState extends State<ReservationPage> {
                                     Row(
                                       children: [
                                         Text("Depart"),
-                                        SizedBox(width: 242),
+                                        SizedBox(width: 300),
                                         Text("Arrivee"),
                                       ],
                                     ),
@@ -262,6 +262,9 @@ class _ReserverState extends State<ReservationPage> {
                                     PrimaryButton(
                                       text: "RESERVEZ",
                                       onPressed: () {
+                                        Text(
+                                          "DESOLE DE NE PAS CONNECTEZ CETTE PARTIE A SUPABASE ",
+                                        );
                                         if (_nomPassager.text.isEmpty) {
                                           ScaffoldMessenger.of(
                                             context,

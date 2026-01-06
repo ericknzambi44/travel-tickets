@@ -33,7 +33,7 @@ void main() async {
         routes: <String, WidgetBuilder>{
           '/connex': (BuildContext context) => ConnexionPage(),
           '/e': (BuildContext context) => EnregistrerPage(),
-          '/': (BuildContext context) => ReservationPage(),
+          '/reservation': (BuildContext context) => ReservationPage(),
           'profile': (BuildContext context) => ProfilePage2(),
           '/paiement': (BuildContext context) => PaiemenPage(),
 
