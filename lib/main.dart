@@ -32,7 +32,7 @@ void main() async {
         title: 'dream_tickets',
         routes: <String, WidgetBuilder>{
           '/connex': (BuildContext context) => ConnexionPage(),
-          '/e': (BuildContext context) => EnregistrerPage(),
+          '/': (BuildContext context) => EnregistrerPage(),
           '/reservation': (BuildContext context) => ReservationPage(),
           'profile': (BuildContext context) => ProfilePage2(),
           '/paiement': (BuildContext context) => PaiemenPage(),
